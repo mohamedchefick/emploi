@@ -1,0 +1,31 @@
+{
+  "name": "emploi",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "serve": "vite --host",
+    "build": "vue-tsc -b && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@clerk/vue": "^1.8.12",
+    "@supabase/supabase-js": "^2.50.3",
+    "@tailwindcss/vite": "^4.1.11",
+    "axios": "^1.10.0",
+    "gsap": "^3.13.0",
+    "npm": "^10.9.3",
+    "swiper": "^11.2.10",
+    "tailwindcss": "^4.1.11",
+    "uninstall": "^0.0.0",
+    "vue": "^3.5.17"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^6.0.0",
+    "@vue/tsconfig": "^0.7.0",
+    "typescript": "~5.8.3",
+    "vite": "^7.0.4",
+    "vue-tsc": "^2.2.10"
+  }
+}
