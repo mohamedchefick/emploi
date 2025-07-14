@@ -22,105 +22,138 @@
       <h3 class="text-2xl font-bold mb-6 text-[#da9a90]">Affinez votre recherche</h3>
 
       <div class="space-y-5 text-left">
+        <!-- Mots-clés -->
         <div>
-          <label class="block font-semibold mb-2">Titre du poste</label>
+          <label for="keywords" class="block font-semibold mb-2">Mots-clés</label>
           <input 
-            v-model="jobTitle"
+            id="keywords"
+            v-model="keywords"
+            name="keywords"
             type="text" 
-            placeholder="Ex: Développeur, Secrétaire..."
-            class="w-full border border-[#da9a90] rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-[#da9a90] placeholder:text-gray-400 bg-white/80"
+            placeholder="Mots-clés"
+            class="search-input form-text w-full border border-[#da9a90] rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-[#da9a90] placeholder:text-gray-400 bg-white/80"
+            autocomplete="off"
+            maxlength="128"
           />
         </div>
 
-        <!-- Multiselect pour les villes -->
+        <!-- Région -->
         <div>
-          <label class="block font-semibold mb-2">Villes</label>
+          <label for="region" class="block font-semibold mb-2">Région(s)</label>
           <div class="relative">
-            <div @click="toggleCitiesDropdown" class="w-full border border-[#da9a90] rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-[#da9a90] bg-white/80 cursor-pointer flex justify-between items-center">
-              <span v-if="selectedCities.length === 0" class="text-gray-400">Sélectionnez une ou plusieurs villes</span>
-              <span v-else class="text-gray-700">{{ selectedCities.length }} ville(s) sélectionnée(s)</span>
-              <svg class="w-5 h-5 text-gray-400 transition-transform" :class="{ 'rotate-180': showCitiesDropdown }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-              </svg>
-            </div>
-            
-            <!-- Liste déroulante des villes -->
-            <div v-if="showCitiesDropdown" class="absolute z-10 w-full mt-1 bg-white/95 backdrop-blur-md border border-[#da9a90] rounded-lg shadow-lg max-h-60 overflow-y-auto">
-              <div v-for="city in cities" :key="city" @click="toggleCity(city)" 
-                   class="p-3 hover:bg-[#da9a90]/10 cursor-pointer flex items-center justify-between transition-colors">
-                <span>{{ city }}</span>
-                <svg v-if="selectedCities.includes(city)" class="w-5 h-5 text-[#da9a90]" fill="currentColor" viewBox="0 0 20 20">
-                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-                </svg>
-              </div>
-            </div>
-          </div>
-          
-          <!-- Tags des villes sélectionnées -->
-          <div v-if="selectedCities.length > 0" class="mt-2 flex flex-wrap gap-2">
-            <span v-for="city in selectedCities" :key="city" 
-                  class="inline-flex items-center px-3 py-1 rounded-full text-sm bg-[#da9a90] text-white">
-              {{ city }}
-              <button @click="removeCity(city)" class="ml-2 text-white hover:text-gray-200 transition-colors">×</button>
-            </span>
-          </div>
-        </div>
-
-        <!-- Multiselect pour les métiers -->
-        <div>
-        <label class="block font-semibold mb-2">Métiers</label>
-            <div class="relative">
-                <input
-                v-model="jobInput"
-                @focus="showJobsDropdown = true"
-                @input="showJobsDropdown = true"
-                type="text"
-                placeholder="Tapez pour rechercher un métier"
-                class="w-full border border-[#da9a90] rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-[#da9a90] bg-white/80"
-                />
-                <!-- Liste déroulante des métiers filtrés -->
-                <div v-if="showJobsDropdown && filteredJobs.length > 0" class="absolute z-10 w-full mt-1 bg-white/95 backdrop-blur-md border border-[#da9a90] rounded-lg shadow-lg max-h-60 overflow-y-auto">
-                <div v-for="job in filteredJobs" :key="job" @click="addJob(job)"
-                    class="p-3 hover:bg-[#da9a90]/10 cursor-pointer flex items-center justify-between transition-colors">
-                    <span>{{ job }}</span>
-                    <svg v-if="selectedJobs.includes(job)" class="w-5 h-5 text-[#da9a90]" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-                    </svg>
-                </div>
-                </div>
-            </div>
-            <!-- Tags des métiers sélectionnés -->
-            <div v-if="selectedJobs.length > 0" class="mt-2 flex flex-wrap gap-2">
-                <span v-for="job in selectedJobs" :key="job"
-                    class="inline-flex items-center px-3 py-1 rounded-full text-sm bg-[#da9a90] text-white">
-                {{ job }}
-                <button @click="removeJob(job)" class="ml-2 text-white hover:text-gray-200 transition-colors">×</button>
-                </span>
-            </div>
-        </div>
-
-        <!-- Select amélioré pour le type de contrat -->
-        <div>
-          <label class="block font-semibold mb-2">Type de contrat</label>
-          <div class="relative">
-            <select v-model="selectedContract" class="w-full border border-[#da9a90] rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-[#da9a90] bg-white/80 appearance-none cursor-pointer">
-              <option value="">Sélectionnez un type de contrat</option>
-              <option value="Temps plein">Temps plein</option>
-              <option value="Temps partiel">Temps partiel</option>
-              <option value="Stage">Stage</option>
-              <option value="Freelance">Freelance</option>
+            <select 
+              id="region" 
+              name="region_filter" 
+              v-model="selectedRegion"
+              class="form-select w-full border border-[#da9a90] rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-[#da9a90] bg-white/80 appearance-none cursor-pointer"
+            >
+              <option value="" selected>Région(s)</option>
+              <option value="57">Abomey</option>
+              <option value="58">Abomey-Calavi</option>
+              <option value="59">Aplahoué</option>
+              <option value="60">Cotonou</option>
+              <option value="61">Djougou</option>
+              <option value="62">Kandi</option>
+              <option value="63">Lokossa</option>
+              <option value="64">Natitingou</option>
+              <option value="65">Parakou</option>
+              <option value="943">Pobè</option>
+              <option value="944">Porto-Novo</option>
+              <option value="945">Savalou</option>
+              <option value="947">International</option>
             </select>
             <svg class="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
             </svg>
           </div>
         </div>
+
+        <!-- Métier -->
+        <div>
+          <label for="job" class="block font-semibold mb-2">Métier</label>
+          <div class="relative">
+            <select 
+              id="job" 
+              name="job_filter" 
+              v-model="selectedJob"
+              class="form-select w-full border border-[#da9a90] rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-[#da9a90] bg-white/80 appearance-none cursor-pointer"
+            >
+              <option value="" selected>Métier</option>
+              <option value="1127">Achats</option>
+              <option value="29">Commercial, vente</option>
+              <option value="30">Gestion, comptabilité, finance</option>
+              <option value="31">Informatique, nouvelles technologies</option>
+              <option value="1115">Juridique</option>
+              <option value="32">Management, direction générale</option>
+              <option value="33">Marketing, communication</option>
+              <option value="34">Métiers de la santé et du social</option>
+              <option value="35">Métiers des services</option>
+              <option value="36">Métiers du BTP</option>
+              <option value="37">Production, maintenance, qualité</option>
+              <option value="39">R&D, gestion de projets</option>
+              <option value="38">RH, formation</option>
+              <option value="40">Secrétariat, assistanat</option>
+              <option value="525">Télémarketing, téléassistance</option>
+              <option value="41">Tourisme, hôtellerie, restauration</option>
+              <option value="28">Transport, logistique</option>
+            </select>
+            <svg class="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Type de contrat (optionnel) -->
+        <div>
+          <label for="contract" class="block font-semibold mb-2">Type de contrat</label>
+          <div class="relative">
+            <select 
+              id="contract"
+              v-model="selectedContract" 
+              class="w-full border border-[#da9a90] rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-[#da9a90] bg-white/80 appearance-none cursor-pointer"
+            >
+              <option value="">Sélectionnez un type de contrat</option>
+              <option value="Temps plein">Temps plein</option>
+              <option value="Temps partiel">Temps partiel</option>
+              <option value="Stage">Stage</option>
+              <option value="Freelance">Freelance</option>
+              <option value="CDD">CDD</option>
+              <option value="CDI">CDI</option>
+            </select>
+            <svg class="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Résumé des filtres sélectionnés -->
+        <div v-if="hasFilters" class="mt-4 p-4 bg-[#da9a90]/10 rounded-lg">
+          <h4 class="font-semibold text-[#da9a90] mb-2">Filtres sélectionnés :</h4>
+          <div class="flex flex-wrap gap-2">
+            <span v-if="keywords" class="inline-flex items-center px-3 py-1 rounded-full text-sm bg-[#da9a90] text-white">
+              Mots-clés: {{ keywords }}
+            </span>
+            <span v-if="selectedRegion" class="inline-flex items-center px-3 py-1 rounded-full text-sm bg-[#da9a90] text-white">
+              Région: {{ getRegionName(selectedRegion) }}
+            </span>
+            <span v-if="selectedJob" class="inline-flex items-center px-3 py-1 rounded-full text-sm bg-[#da9a90] text-white">
+              Métier: {{ getJobName(selectedJob) }}
+            </span>
+            <span v-if="selectedContract" class="inline-flex items-center px-3 py-1 rounded-full text-sm bg-[#da9a90] text-white">
+              Contrat: {{ selectedContract }}
+            </span>
+          </div>
+        </div>
       </div>
 
-      <button @click="applyFilters" class="mt-6 w-full bg-[#da9a90] text-white py-3 rounded-full font-semibold hover:bg-[#bb857d] transition-colors cursor-pointer">
-        Rechercher
-      </button>
-
+      <div class="flex gap-4 mt-6">
+        <button @click="clearFilters" class="flex-1 bg-gray-200 text-gray-700 py-3 rounded-full font-semibold hover:bg-gray-300 transition-colors cursor-pointer">
+          Réinitialiser
+        </button>
+        <button @click="applyFilters" class="flex-1 bg-[#da9a90] text-white py-3 rounded-full font-semibold hover:bg-[#bb857d] transition-colors cursor-pointer">
+          Rechercher
+        </button>
+      </div>
     </div>
   </div>
 
@@ -129,131 +162,121 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed } from 'vue'
 import SearchResults from './SearchResults.vue'
 import IMGCotonou from '../assets/image/cotnou.webp'
-
-// Données
-const cities = [
-  'Cotonou', 'Porto-Novo', 'Parakou', 'Abomey', 'Bohicon', 'Djougou', 'Natitingou', 'Kandi', 'Lokossa', 'Ouidah',
-  'Abomey-Calavi', 'Malanville', 'Savalou', 'Banikoara', 'Bassila', 'Nikki', 'Tchaourou', 'Kétou', 'Pobè',
-  'Comè', 'Allada', 'Bembèrèkè', 'Dogbo', 'Kouandé', 'Covè', 'Zagnanado', 'Aplahoué', 'Dassa-Zoumè', 'Tanguiéta'
-]
-
-
-// Jobs
-const jobs = [
-  'Développeur', 'Secrétaire', 'Infirmier', 'Enseignant', 'Commercial', 'Électricien', 'Comptable', 'Chauffeur',
-  'Cuisinier', 'Community Manager', 'Informatique'
-]
 
 // États
 const showModal = ref(false)
 const showResults = ref(false)
-const showCitiesDropdown = ref(false)
-const showJobsDropdown = ref(false)
 
-const jobTitle = ref('')
-const selectedCities = ref<string[]>([])
-const selectedJobs = ref<string[]>([])
+// Champs de recherche
+const keywords = ref('')
+const selectedRegion = ref('')
+const selectedJob = ref('')
 const selectedContract = ref('')
 
 // Stockage des filtres
 const filters = ref({
-  jobTitle: '',
-  cities: [] as string[],
-  jobs: [] as string[],
+  keywords: '',
+  region: '',
+  job: '',
   contract: ''
 })
 
-const jobInput = ref('')
-
-const filteredJobs = computed(() =>
-  jobs.filter(
-    job =>
-      job.toLowerCase().includes(jobInput.value.toLowerCase()) &&
-      !selectedJobs.value.includes(job)
-  )
-)
-
-const addJob = (job: string) => {
-  if (!selectedJobs.value.includes(job)) {
-    selectedJobs.value.push(job)
-  }
-  jobInput.value = ''
-  showJobsDropdown.value = false
+// Mappings pour les noms d'affichage
+const regionMap = {
+  '57': 'Abomey',
+  '58': 'Abomey-Calavi',
+  '59': 'Aplahoué',
+  '60': 'Cotonou',
+  '61': 'Djougou',
+  '62': 'Kandi',
+  '63': 'Lokossa',
+  '64': 'Natitingou',
+  '65': 'Parakou',
+  '943': 'Pobè',
+  '944': 'Porto-Novo',
+  '945': 'Savalou',
+  '947': 'International'
 }
 
-// Méthodes pour les villes
-const toggleCitiesDropdown = () => {
-  showCitiesDropdown.value = !showCitiesDropdown.value
-  showJobsDropdown.value = false
+const jobMap = {
+  '1127': 'Achats',
+  '29': 'Commercial, vente',
+  '30': 'Gestion, comptabilité, finance',
+  '31': 'Informatique, nouvelles technologies',
+  '1115': 'Juridique',
+  '32': 'Management, direction générale',
+  '33': 'Marketing, communication',
+  '34': 'Métiers de la santé et du social',
+  '35': 'Métiers des services',
+  '36': 'Métiers du BTP',
+  '37': 'Production, maintenance, qualité',
+  '39': 'R&D, gestion de projets',
+  '38': 'RH, formation',
+  '40': 'Secrétariat, assistanat',
+  '525': 'Télémarketing, téléassistance',
+  '41': 'Tourisme, hôtellerie, restauration',
+  '28': 'Transport, logistique'
 }
 
-const toggleCity = (city: string) => {
-  const index = selectedCities.value.indexOf(city)
-  if (index > -1) {
-    selectedCities.value.splice(index, 1)
-  } else {
-    selectedCities.value.push(city)
-  }
-}
-
-const removeCity = (city: string) => {
-  const index = selectedCities.value.indexOf(city)
-  if (index > -1) {
-    selectedCities.value.splice(index, 1)
-  }
-}
-
-// Méthodes pour les métiers
-// const toggleJobsDropdown = () => {
-//   showJobsDropdown.value = !showJobsDropdown.value
-//   showCitiesDropdown.value = false
-// }
-
-// const toggleJob = (job: string) => {
-//   const index = selectedJobs.value.indexOf(job)
-//   if (index > -1) {
-//     selectedJobs.value.splice(index, 1)
-//   } else {
-//     selectedJobs.value.push(job)
-//   }
-// }
-
-const removeJob = (job: string) => {
-  const index = selectedJobs.value.indexOf(job)
-  if (index > -1) {
-    selectedJobs.value.splice(index, 1)
-  }
-}
-
-// Fermer les dropdowns en cliquant à l'extérieur
-const handleClickOutside = (event: Event) => {
-  const target = event.target as HTMLElement
-  if (!target.closest('.relative')) {
-    showCitiesDropdown.value = false
-    showJobsDropdown.value = false
-  }
-}
-
-onMounted(() => {
-  document.addEventListener('click', handleClickOutside)
+// Computed properties
+const hasFilters = computed(() => {
+  return keywords.value || selectedRegion.value || selectedJob.value || selectedContract.value
 })
 
-onUnmounted(() => {
-  document.removeEventListener('click', handleClickOutside)
-})
+// Méthodes utilitaires
+const getRegionName = (regionId: string) => {
+  return regionMap[regionId as keyof typeof regionMap] || regionId
+}
+
+const getJobName = (jobId: string) => {
+  return jobMap[jobId as keyof typeof jobMap] || jobId
+}
 
 // Méthodes principales
 const applyFilters = () => {
   filters.value = {
-    jobTitle: jobTitle.value,
-    cities: selectedCities.value,
-    jobs: selectedJobs.value,
+    keywords: keywords.value,
+    region: selectedRegion.value,
+    job: selectedJob.value,
     contract: selectedContract.value
   }
   showModal.value = false
   showResults.value = true
 }
+
+const clearFilters = () => {
+  keywords.value = ''
+  selectedRegion.value = ''
+  selectedJob.value = ''
+  selectedContract.value = ''
+}
 </script>
+
+<style scoped>
+/* Styles pour améliorer l'apparence des selects */
+.form-select {
+  background-image: none;
+}
+
+.search-input {
+  transition: all 0.3s ease;
+}
+
+.search-input:focus {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(218, 154, 144, 0.2);
+}
+
+/* Animation pour le modal */
+.modal-enter-active, .modal-leave-active {
+  transition: all 0.3s ease;
+}
+
+.modal-enter-from, .modal-leave-to {
+  opacity: 0;
+  transform: scale(0.9);
+}
+</style>

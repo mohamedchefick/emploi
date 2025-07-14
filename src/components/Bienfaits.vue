@@ -59,8 +59,8 @@
 </template>
 
 <script setup lang="ts">
-import IMGAvenir from "../assets/image/bgAvenir.webp"
 import { ref } from 'vue'
+import IMGAvenir from "../assets/image/bgAvenir.webp"
 
 const avantages = ref([
   {
